@@ -1,0 +1,26 @@
+# Global Docker Ignore
+
+# Build outputs & dependencies
+.dart_tool/
+build/
+dist/
+node_modules/
+bin/
+pkg/
+
+# Git & IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+*.swp
+*.log
+
+# Windows & OS garbage
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Temporary files & artifacts
+tmp/
+.gemini/

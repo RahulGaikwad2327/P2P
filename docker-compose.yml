@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # ── 1. Node.js WebSocket Signaling Server ─────────────────────────
+  signaling-server:
+    build:
+      context: ./signaling-server
+      dockerfile: Dockerfile
+    container_name: p2p-signaling-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - HOST=0.0.0.0
+      - NODE_ENV=production
+      - JWT_SECRET=super_secret_p2p_signaling_key_2026_production
+      - JWT_EXPIRES_IN=7d
+      - ALLOWED_ORIGINS=*
+      - LOG_LEVEL=info
+    networks:
+      - p2p-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--spider", "http://localhost:3000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ── 2. Go Core Encrypted P2P Engine ──────────────────────────────
+  core-engine:
+    build:
+      context: ./core-engine
+      dockerfile: Dockerfile
+    container_name: p2p-core-engine
+    restart: unless-stopped
+    ports:
+      - "9000:9000" # Local bridge API
+      - "8443:8443" # Direct P2P transfer port
+    networks:
+      - p2p-network
+
+  # ── 3. Flutter Web Cyberpunk Client ───────────────────────────────
+  flutter-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: p2p-flutter-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - signaling-server
+    networks:
+      - p2p-network
+
+networks:
+  p2p-network:
+    driver: bridge
+    name: p2p-mesh-network
