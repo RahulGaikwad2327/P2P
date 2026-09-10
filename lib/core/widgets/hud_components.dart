@@ -321,7 +321,9 @@ class SectionTitle extends StatelessWidget {
               ],
             ],
           ),
-          ?trailing,
+
+          // FIX
+          if (trailing != null) trailing!,
         ],
       ),
     );
