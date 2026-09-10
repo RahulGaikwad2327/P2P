@@ -11,6 +11,7 @@ jobs:
   flutter-client:
     name: Flutter Client CI
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -27,10 +28,24 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Check Flutter and Dart versions
+      - name: Verify Flutter and Dart
         run: |
+          which flutter
+          which dart
           flutter --version
           dart --version
+          flutter doctor -v
+
+      - name: Force Flutter SDK paths
+        run: |
+          echo "$(dirname "$(which flutter)")" >> $GITHUB_PATH
+          echo "$(dirname "$(which flutter)")/cache/dart-sdk/bin" >> $GITHUB_PATH
+
+      - name: Verify Dart after PATH setup
+        run: |
+          which dart
+          dart --version
+          flutter --version
 
       - name: Get dependencies
         run: flutter pub get
@@ -51,6 +66,7 @@ jobs:
     defaults:
       run:
         working-directory: ./signaling-server
+
     steps:
       - uses: actions/checkout@v4
 
@@ -74,6 +90,7 @@ jobs:
     defaults:
       run:
         working-directory: ./core-engine
+
     steps:
       - uses: actions/checkout@v4
 
@@ -95,6 +112,7 @@ jobs:
     name: Docker Compose Build Test
     runs-on: ubuntu-latest
     needs: [flutter-client, signaling-server, core-engine]
+
     steps:
       - uses: actions/checkout@v4
 
