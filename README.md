@@ -10,10 +10,6 @@
 A high-speed, end-to-end encrypted peer-to-peer file transfer system engineered with a **Nothing OS / Cyberpunk HUD** design language.
 
 ---
-
-#Live website 
-https://slrv-beam.vercel.app/
-
 ## 🏗️ High-Level System Architecture
 
 ```
